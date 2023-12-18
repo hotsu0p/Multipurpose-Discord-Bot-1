@@ -105,6 +105,8 @@ process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
  *********************************************************/
 const express = require('express');
 const session = require('express-session');
+const passport = require('passport');
+const DiscordStrategy = require('passport-discord').Strategy;
 const path = require('path')
 const app = express();
 app.set('views', path.join(__dirname, 'dashboard', 'views'));
@@ -117,6 +119,26 @@ app.use(session({
   saveUninitialized: false
 }));
 
+passport.use(new DiscordStrategy({
+  clientID: 'YOUR_DISCORD_CLIENT_ID',
+  clientSecret: 'YOUR_DISCORD_CLIENT_SECRET',
+  callbackURL: 'https://yourdomain.com/auth/discord/callback'
+}, (accessToken, refreshToken, profile, done) => {
+  // Handle user authentication, store user details, create session/token, etc.
+  // 'profile' contains user information returned by Discord after authentication.
+  return done(null, profile);
+}));
+
+// Route to start the authentication process
+app.get('/auth/discord', passport.authenticate('discord'));
+
+// Callback route after successful authentication
+app.get('/auth/discord/callback', passport.authenticate('discord', {
+  failureRedirect: '/' // Redirect to homepage on failure
+}), (req, res) => {
+  // Successful authentication, handle further actions (e.g., redirect to dashboard)
+  res.redirect('/dashboard');
+});
 app.get('/', (req, res) => {
   res.render('login');
 });
@@ -145,6 +167,10 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Dashboard is running on http://localhost:${PORT}`);
+});
+app.get('/invite', (req, res) => {
+  const inviteURL = 'YOUR_BOT_INVITE_URL'; // Replace with your actual bot's invite URL
+  res.render('invite', { inviteURL });
 });
 /**********************************************************
  * @param {7} Define_the_Client_Advertisments from the Config File
