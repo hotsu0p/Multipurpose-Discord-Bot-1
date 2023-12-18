@@ -181,7 +181,22 @@ client.ad = {
   spacedot: advertisement.spacedot,
   textad: advertisement.textad
 }
+//
 
+const configFile = path.join(__dirname, '/dashboard/config.json'); // Define the path to config.json
+
+try {
+  const configData = JSON.parse(fs.readFileSync(configFile, 'utf8')); // Read and parse the JSON file
+  const botPrefix = configData.prefix;
+
+  client.on('message', (message) => {
+    if (message.content === `${botPrefix}ping`) {
+      message.channel.send('Pong!');
+    }
+  });
+} catch (err) {
+  console.error('Error reading or parsing the config file:', err);
+}
 
 
 /**********************************************************
