@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Dashboard</title>
+  <link rel="stylesheet" href="/styles/main.css"> <!-- Link to main.css -->
+  <style>
+    /* Custom styles for the welcome page */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #1f1f1f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .welcome-card {
+      background-color: #2f2f2f;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .welcome-card h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .welcome-card p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #ccc;
+    }
+    .invite-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: block; /* Display as block to take full width */
+      width: 200px; /* Set button width */
+      margin: 0 auto; /* Center horizontally */
+    }
+    .invite-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Login</h1>
-  <a href="/login">Login</a>
+  <div class="welcome-card">
+    <h1>Welcome to the Dashboard</h1>
+    <p>This dashboard allows you to manage your bot's functionalities.
+      not much here rn
+    </p>
+    
+    <!-- Replace '/invite' with your actual invite page route -->
+    <a href="/invite" class="invite-button">
+      Go to Invite Page
+    </a>
+  </div>
 </body>
 </html>

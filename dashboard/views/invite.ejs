@@ -1,16 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bot Invite</title>
-  <!-- Add any necessary CSS or styling links here -->
+  <link rel="stylesheet" href="/styles/main.css"> <!-- Link to main.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #1f1f1f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .invite-card {
+      background-color: #2f2f2f;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .invite-card h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .invite-card p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #ccc;
+    }
+    .invite-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .invite-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Invite the Bot</h1>
-  <p>Click the button below to invite the bot to your server:</p>
-  
-  <!-- Replace 'YOUR_BOT_INVITE_URL' with your actual bot's invite URL -->
-  <a href="<%= inviteURL %>" target="_blank">
-    <button>Invite Bot</button>
-  </a>
+  <div class="invite-card">
+    <h1>Invite the Bot</h1>
+    <p>Click the button below to invite the bot to your server:</p>
+    
+    <!-- Replace 'YOUR_BOT_INVITE_URL' with your actual bot's invite URL -->
+    <a href="<%= inviteURL %>" class="invite-button" target="_blank">
+      <i class="fab fa-discord"></i> Invite Bot
+    </a>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script> <!-- Font Awesome JS -->
 </body>
 </html>
