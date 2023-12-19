@@ -181,113 +181,120 @@ client.ad = {
   spacedot: advertisement.spacedot,
   textad: advertisement.textad
 }
-//const express = require('express');
 const bodyParser = require('body-parser');
-
-
-
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const thanksFilePath = './data/thanks.json'; // Update this path to your thanks.json file
+const thanksFilePath = './data/thanks.json';
 
-// Route to render the dashboard form
 app.get('/dashboard', (req, res) => {
-  // Render your dashboard HTML with the form to add thanks
   res.sendFile(__dirname + '/dashboard.html');
 });
 
-// Route to handle adding thanks from the dashboard
 app.post('/dashboard/addthanks', (req, res) => {
   const { userId, reason, thanker } = req.body;
-
   let thanksData = {};
-
-  // Check if the file exists before reading
-  if (fs.existsSync(thanksFilePath)) {
-    // Read existing thanks data
-    const fileContent = fs.readFileSync(thanksFilePath, 'utf8');
+  
+  fs.readFile(thanksFilePath, 'utf8', (err, fileContent) => {
+    if (err) {
+      return res.status(500).send('Error: Unable to read file');
+    }
+    
     thanksData = JSON.parse(fileContent);
-  }
+    const timestamp = new Date().toISOString();
+    const newThanks = { thanker, reason, timestamp };
 
-  const timestamp = new Date().toISOString();
-  const newThanks = { thanker, reason, timestamp };
-
-  // Check if the user already has thanks
-  if (!thanksData[userId]) {
-    thanksData[userId] = [newThanks]; // Initialize as an array for the first thanks
-  } else {
-    if (!Array.isArray(thanksData[userId])) {
-      // If the existing data is not an array
-      if (typeof thanksData[userId] === 'object' && thanksData[userId] !== null) {
-        // If it's an object (but not null), convert it into an array
-        thanksData[userId] = [thanksData[userId], newThanks];
+    if (!thanksData[userId]) {
+      thanksData[userId] = [newThanks];
+    } else {
+      if (!Array.isArray(thanksData[userId])) {
+        if (typeof thanksData[userId] === 'object' && thanksData[userId] !== null) {
+          thanksData[userId] = [thanksData[userId], newThanks];
+        } else {
+          return res.status(500).send('Error: Invalid existing data type');
+        }
       } else {
-        return res.status(500).send('Error: Invalid existing data type');
+        thanksData[userId].push(newThanks);
       }
-    } else {
-      thanksData[userId].push(newThanks); // Add thanks to the existing array
     }
-  }
-  app.use(session({
-    secret: 'your_secret_here', // Replace with a secret key for session management
-    resave: false,
-    saveUninitialized: false
-  }));
-  
-  app.use(express.urlencoded({ extended: true }));
 
-  app.get('/login', (req, res) => {
-    res.render('login'); // Replace 'login' with your actual login EJS file
+    fs.writeFile(thanksFilePath, JSON.stringify(thanksData, null, 2), (err) => {
+      if (err) {
+        return res.status(500).send('Error: Unable to write file');
+      }
+      
+      res.send(`Thanks added to user with ID: ${userId}`);
+    });
   });
-  
-  // Route to handle the login form submission
-  app.post('/login', (req, res) => {
-    const { username, password } = req.body; // Retrieve username and password from the form
-  
-    // Validate the username and password (example: compare with a hardcoded set of credentials)
-    if (username === 'your_username' && password === 'your_password') {
-      // If the credentials are correct, perform login logic (e.g., set session, redirect, etc.)
-      // For example, you might set a session here and redirect to a dashboard
-      req.session.isLoggedIn = true; // Set a session variable to indicate login
-      res.redirect('/dashboard'); // Redirect to the dashboard or desired page after successful login
-    } else {
-      // If the credentials are incorrect, handle invalid login (e.g., show an error message)
-      res.send('Invalid username or password. Please try again.'); // Example error response
-    }
-  });
-  // Write the updated thanks data back to the file
-  fs.writeFileSync(thanksFilePath, JSON.stringify(thanksData, null, 2));
-
-  res.send(`Thanks added to user with ID: ${userId}`);
 });
+
+app.use(session({
+  secret: 'your_secret_here',
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Implement secure authentication system here
+  
+  if (isValidCredentials) {
+    req.session.isLoggedIn = true;
+    res.redirect('/dashboard');
+  } else {
+    res.send('Invalid username or password. Please try again.');
+  }
+});
+
 app.get('/dashboard', async (req, res) => {
-  try {
-    const guildId = 'YOUR_GUILD_ID'; // Replace with your guild ID
-
-    const guild = await client.guilds.fetch(guildId);
-    const memberCount = guild.memberCount;
-
-    let onlineUsers = 0;
-    guild.members.cache.forEach((member) => {
-      if (member.presence.status === 'online') {
-        onlineUsers++;
-      }
-    });
-
-    const totalChannels = guild.channels.cache.size;
-
-    res.render('dashboard', {
-      memberCount,
-      onlineUsers,
-      totalChannels,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error fetching server overview');
-  }
+  // Fetch server overview stats and render the dashboard page
 });
+
+app.use(bodyParser.json());
+
+app.post('/updateStatus', (req, res) => {
+  const { text, text2, type, url } = req.body;
+  const configFile = './botconfig/config.json';
+  
+  fs.readFile(configFile, (err, configData) => {
+    if (err) {
+      return res.status(500).send('Error: Unable to read file');
+    }
+    
+    configData = JSON.parse(configData);
+
+    configData.status = {
+      text: text || configData.status.text,
+      text2: text2 || configData.status.text2,
+      type: type || configData.status.type,
+      url: url || configData.status.url
+    };
+
+    fs.writeFile(configFile, JSON.stringify(configData, null, 2), (err) => {
+      if (err) {
+        return res.status(500).send('Error: Unable to write file');
+      }
+      
+      res.send('Status updated successfully, Bot will restart in 1 second.');
+      setTimeout(() => {
+        server.close(() => {
+          console.log('Server closed');
+          process.exit(0);
+        });
+      }, 1000);
+    });
+  });
+});
+
 // Start the server
-//
+// ...
+
 
 
 const configFile = path.join(__dirname, '/dashboard/config.json'); // Define the path to config.json

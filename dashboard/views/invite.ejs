@@ -107,6 +107,14 @@
       Go to Thanks Page
     </a>
   </div>
+  <form action="/updateStatus" method="post">
+    <input type="text" name="text" placeholder="Status Text"><br>
+    <input type="text" name="text2" placeholder="Status Text 2"><br>
+    <input type="text" name="type" placeholder="Status Type"><br>
+    <input type="text" name="url" placeholder="Status URL"><br>
+    <button type="submit">Update Status</button>
+  </form>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script> <!-- Font Awesome JS -->
   <script>
     function sendMessageToWebhook() {
