@@ -228,13 +228,64 @@ app.post('/dashboard/addthanks', (req, res) => {
       thanksData[userId].push(newThanks); // Add thanks to the existing array
     }
   }
+  app.use(session({
+    secret: 'your_secret_here', // Replace with a secret key for session management
+    resave: false,
+    saveUninitialized: false
+  }));
+  
+  app.use(express.urlencoded({ extended: true }));
 
+  app.get('/login', (req, res) => {
+    res.render('login'); // Replace 'login' with your actual login EJS file
+  });
+  
+  // Route to handle the login form submission
+  app.post('/login', (req, res) => {
+    const { username, password } = req.body; // Retrieve username and password from the form
+  
+    // Validate the username and password (example: compare with a hardcoded set of credentials)
+    if (username === 'your_username' && password === 'your_password') {
+      // If the credentials are correct, perform login logic (e.g., set session, redirect, etc.)
+      // For example, you might set a session here and redirect to a dashboard
+      req.session.isLoggedIn = true; // Set a session variable to indicate login
+      res.redirect('/dashboard'); // Redirect to the dashboard or desired page after successful login
+    } else {
+      // If the credentials are incorrect, handle invalid login (e.g., show an error message)
+      res.send('Invalid username or password. Please try again.'); // Example error response
+    }
+  });
   // Write the updated thanks data back to the file
   fs.writeFileSync(thanksFilePath, JSON.stringify(thanksData, null, 2));
 
   res.send(`Thanks added to user with ID: ${userId}`);
 });
+app.get('/dashboard', async (req, res) => {
+  try {
+    const guildId = 'YOUR_GUILD_ID'; // Replace with your guild ID
 
+    const guild = await client.guilds.fetch(guildId);
+    const memberCount = guild.memberCount;
+
+    let onlineUsers = 0;
+    guild.members.cache.forEach((member) => {
+      if (member.presence.status === 'online') {
+        onlineUsers++;
+      }
+    });
+
+    const totalChannels = guild.channels.cache.size;
+
+    res.render('dashboard', {
+      memberCount,
+      onlineUsers,
+      totalChannels,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching server overview');
+  }
+});
 // Start the server
 //
 
