@@ -181,7 +181,63 @@ client.ad = {
   spacedot: advertisement.spacedot,
   textad: advertisement.textad
 }
+//const express = require('express');
+const bodyParser = require('body-parser');
+
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const thanksFilePath = './data/thanks.json'; // Update this path to your thanks.json file
+
+// Route to render the dashboard form
+app.get('/dashboard', (req, res) => {
+  // Render your dashboard HTML with the form to add thanks
+  res.sendFile(__dirname + '/dashboard.html');
+});
+
+// Route to handle adding thanks from the dashboard
+app.post('/dashboard/addthanks', (req, res) => {
+  const { userId, reason, thanker } = req.body;
+
+  let thanksData = {};
+
+  // Check if the file exists before reading
+  if (fs.existsSync(thanksFilePath)) {
+    // Read existing thanks data
+    const fileContent = fs.readFileSync(thanksFilePath, 'utf8');
+    thanksData = JSON.parse(fileContent);
+  }
+
+  const timestamp = new Date().toISOString();
+  const newThanks = { thanker, reason, timestamp };
+
+  // Check if the user already has thanks
+  if (!thanksData[userId]) {
+    thanksData[userId] = [newThanks]; // Initialize as an array for the first thanks
+  } else {
+    if (!Array.isArray(thanksData[userId])) {
+      // If the existing data is not an array
+      if (typeof thanksData[userId] === 'object' && thanksData[userId] !== null) {
+        // If it's an object (but not null), convert it into an array
+        thanksData[userId] = [thanksData[userId], newThanks];
+      } else {
+        return res.status(500).send('Error: Invalid existing data type');
+      }
+    } else {
+      thanksData[userId].push(newThanks); // Add thanks to the existing array
+    }
+  }
+
+  // Write the updated thanks data back to the file
+  fs.writeFileSync(thanksFilePath, JSON.stringify(thanksData, null, 2));
+
+  res.send(`Thanks added to user with ID: ${userId}`);
+});
+
+// Start the server
 //
+
 
 const configFile = path.join(__dirname, '/dashboard/config.json'); // Define the path to config.json
 

@@ -11,32 +11,32 @@ module.exports = {
 
   run: async (client, message, args, cmduser, text, prefix) => {
     try {
-      // Fetch mentioned user or use message author
       const user = message.mentions.members.first() || message.member;
-
-      // Read the thanks data from the JSON file
       const thanksData = JSON.parse(fs.readFileSync('./data/thanks.json', 'utf8'));
 
-      if (!thanksData[message.guild.id] || !thanksData[message.guild.id][user.id]) {
+      if (!thanksData[user.id]) {
         return message.reply('No thanks found for this user.');
       }
 
-      const receivedThanks = thanksData[message.guild.id][user.id];
+      const receivedThanks = thanksData[user.id];
+      const receivedThanksCount = receivedThanks.length;
 
-      // Create an embed to display the thanks data
+      if (receivedThanksCount === 0) {
+        return message.reply('No thanks found for this user.');
+      }
+
       const embed = new MessageEmbed()
         .setColor('#ffa500')
         .setTitle(`Thanks Received for ${user.user.tag}`)
-        .setDescription(`Total Thanks: ${receivedThanks.length}\n\n`);
+        .setDescription(`Total Thanks: ${receivedThanksCount}\n\n`);
 
-      // Add thanks details to the embed
-      for (const thanks of receivedThanks) {
+      receivedThanks.forEach((thanks) => {
         const thanker = client.users.cache.get(thanks.thanker);
         embed.addField(
-          `Thanked for ${thanks.reason}`,
+          `Thanked for: ${thanks.reason}`,
           `**Thanked by**: ${thanker ? thanker.tag : 'Unknown User'}\n**Date**: ${thanks.timestamp}`
         );
-      }
+      });
 
       await message.channel.send({ embeds: [embed] });
     } catch (error) {

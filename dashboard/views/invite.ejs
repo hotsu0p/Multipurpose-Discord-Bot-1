@@ -100,7 +100,21 @@
       <button type="button" onclick="sendMessageToWebhook()">Send to Webhook</button>
     </form>
   </div>
-
+  <div class="invite-card">
+    <h1>Add Thanks</h1>
+    <form action="/dashboard/addthanks" method="post">
+      <label for="userId">User ID:</label>
+      <input type="text" id="userId" name="userId" placeholder="User ID">
+  
+      <label for="reason">Reason:</label>
+      <input type="text" id="reason" name="reason" placeholder="Reason for thanks">
+  
+      <label for="thanker">Thanker ID:</label>
+      <input type="text" id="thanker" name="thanker" placeholder="Thanker ID">
+  
+      <input type="submit" value="Add Thanks">
+    </form>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script> <!-- Font Awesome JS -->
   <script>
