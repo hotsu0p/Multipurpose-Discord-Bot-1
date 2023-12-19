@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Dashboard</title>
+  <title>Thanks - Dashboard</title>
   <link rel="stylesheet" href="/styles/main.css"> <!-- Link to main.css -->
   <style>
     /* Custom styles for the welcome page */
@@ -56,17 +56,24 @@
   </style>
 </head>
 <body>
-  <div class="welcome-card">
-    <h1>Welcome to the Dashboard</h1>
-    <p>This dashboard allows you to manage your bot's functionalities.
-      not much here rn
-    </p>
+  <div class="thanks-card">
+    <h1>Thanks Page</h1>
     
-    <!-- Replace '/invite' with your actual invite page route -->
-    <a href="/invite" class="invite-button">
-      Go to Tools Page
-    </a>
+    <!-- Form for thanking a user -->
+    <form action="/dashboard/addthanks" method="POST">
+      <label for="userId">User ID to thank:</label>
+      <input type="text" id="userId" name="userId">
+      <label for="reason">Reason:</label>
+      <input type="text" id="reason" name="reason">
+      <button type="submit">Thank</button>
+    </form>
+    
+    <!-- Form for checking thanks of a user -->
+    <form action="/dashboard/checkthanks" method="POST">
+      <label for="checkUserId">User ID to check thanks:</label>
+      <input type="text" id="checkUserId" name="checkUserId">
+      <button type="submit">Check Thanks</button>
+    </form>
   </div>
-  
 </body>
 </html>

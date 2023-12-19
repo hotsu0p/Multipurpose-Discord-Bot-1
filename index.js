@@ -253,6 +253,11 @@ try {
 } catch (err) {
   console.error('Error reading or parsing the config file:', err);
 }
+app.get('/thanks', (req, res) => {
+  // Render your Thanks page HTML here or send a response
+  res.render('thanks'); // Assuming you have a view file named 'thanks.ejs'
+
+});
 
 
 /**********************************************************
